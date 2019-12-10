@@ -20,9 +20,17 @@ class CorniceSwaggerPredicate(object):
     def phash(self):
         return str(self.schema)
 
+    def text(self):
+        return self.phash()
+
     def __call__(self, context, request):
         return self.schema
 
+class SecurityPredicate(CorniceSwaggerPredicate):
+    def __call__(self, context, request):
+        # empty security schemas are allowed by the swagger v2 spec
+        # but view predicates that return falsey values break pyramid
+        return True
 
 def includeme(config):
     # Custom view parameters
